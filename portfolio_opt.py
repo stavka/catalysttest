@@ -113,7 +113,7 @@ def handle_data(context, data):
                if data.can_trade(asset):
                    order_target_percent(asset, weights[coin])
            except:
-               print assetname + ' Not found'
+               print (assetname + ' Not found')
        
        #order optimal weights for each asset
        #for asset in weights.index:
@@ -125,6 +125,9 @@ def handle_data(context, data):
        record(weights=weights)
    context.i += 1
    
+   
+   
+   
        
 def analyze(context=None, results=None):
    ax1 = plt.subplot(211)
@@ -133,7 +136,53 @@ def analyze(context=None, results=None):
    ax2 = plt.subplot(212, sharex=ax1)
    results.sharpe.plot(ax=ax2)
    ax2.set_ylabel('sharpe ratio')
+   plt.show() 
+
+   daily_returns = (results.portfolio_value - results.portfolio_value.shift(1))/results.portfolio_value
+   daily_vol = daily_returns.rolling(len(daily_returns), min_periods=1).std()
+   
+   ax1 = plt.subplot(211)
+   daily_returns.plot(ax=ax1)
+   ax1.set_ylabel('daily returns')
+   ax2 = plt.subplot(212, sharex=ax1)
+   #print daily_vol
+   daily_vol.plot(ax=ax2)
+   
+   ax2.set_ylabel('daily vol')
+   plt.show() 
+   
+   weekly_results= results.portfolio_value.resample('1W').last() 
+   weekly_returns = (weekly_results - weekly_results.shift(1))/weekly_results
+   weekly_vol = weekly_returns.rolling(len(weekly_returns), min_periods=1).std()
+   
+   ax1 = plt.subplot(211)
+   weekly_returns.plot(ax=ax1)
+   ax1.set_ylabel('weekly returns')
+   ax2 = plt.subplot(212, sharex=ax1)
+   #print daily_vol
+   weekly_vol.plot(ax=ax2)
+   
+   ax2.set_ylabel('weekly vol')
+   plt.show() 
+
+   monthly_results= results.portfolio_value.resample('1M').last() 
+   monthly_returns = (monthly_results - monthly_results.shift(1))/monthly_results
+   monthly_vol = monthly_returns.rolling(len(monthly_returns), min_periods=1).std()
+   
+   ax1 = plt.subplot(211)
+   monthly_returns.plot(ax=ax1)
+   ax1.set_ylabel('monthly returns')
+   ax2 = plt.subplot(212, sharex=ax1)
+   #print daily_vol
+   monthly_vol.plot(ax=ax2)
+   
+   ax2.set_ylabel('monthly vol')
    plt.show()    
+   
+   
+   
+   #results.portfolio_value.resample('1W').last()   
+   #results.portfolio_value.resample('1M').last()
     
    # Form DataFrame with selected data
    data = results[['weights']]
@@ -145,7 +194,8 @@ def analyze(context=None, results=None):
 
 # Bitcoin data is available from 2015-3-2. Dates vary for other tokens.    
 start = datetime(2017, 5, 30, 0, 0, 0, 0, pytz.utc)
-end = datetime(2017, 11, 30, 0, 0, 0, 0, pytz.utc) 
+end = datetime(2018, 1, 5, 0, 0, 0, 0, pytz.utc) 
+#end = datetime(2017, 11, 30, 0, 0, 0, 0, pytz.utc) 
 results = run_algorithm(initialize=initialize,
                         handle_data=handle_data,
                         analyze=analyze,
