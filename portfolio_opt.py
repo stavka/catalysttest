@@ -21,27 +21,27 @@ from datetime import datetime, timedelta
 
 from catalyst.api import record, symbol, symbols, order_target_percent
 from catalyst.utils.run_algo import run_algorithm
-from catalyst.exchange.exchange_utils import get_exchange_symbols
+#from catalyst.exchange.exchange_utils import get_exchange_symbols
 
 np.set_printoptions(threshold='nan', suppress=True)
 
 
 
 def universe(context, lookback_date, current_date):
-    json_symbols = get_exchange_symbols(context.exchange)  # get all the pairs for the exchange
-    universe_df = pd.DataFrame.from_dict(json_symbols).transpose().astype(str)  # convert into a dataframe
-    universe_df['base_currency'] = universe_df.apply(lambda row: row.symbol.split('_')[1],
-                                                                       axis=1)
-    universe_df['market_currency'] = universe_df.apply(lambda row: row.symbol.split('_')[0],
-                                                                         axis=1)
+    #json_symbols = get_exchange_symbols(context.exchange)  # get all the pairs for the exchange
+    #universe_df = pd.DataFrame.from_dict(json_symbols).transpose().astype(str)  # convert into a dataframe
+    #universe_df['base_currency'] = universe_df.apply(lambda row: row.symbol.split('_')[1],
+    #                                                                   axis=1)
+    #universe_df['market_currency'] = universe_df.apply(lambda row: row.symbol.split('_')[0],
+    #                                                                     axis=1)
 
     # Filter all the exchange pairs to only the ones for a give base currency
-    universe_df = universe_df[universe_df['base_currency'] == context.base_currency]
+    #universe_df = universe_df[universe_df['base_currency'] == context.base_currency]
 
     # Filter all the pairs to ensure that pair existed in the current date range
-    universe_df = universe_df[universe_df.start_date < lookback_date]
-    universe_df = universe_df[universe_df.end_daily >= current_date]
-    context.coins = symbols(*universe_df.symbol)  # convert all the pairs to symbols
+    #universe_df = universe_df[universe_df.start_date < lookback_date]
+    #universe_df = universe_df[universe_df.end_daily >= current_date]
+    #context.coins = symbols(*universe_df.symbol)  # convert all the pairs to symbols
     
     # print(universe_df.symbol.tolist())
     return universe_df.symbol.tolist()
